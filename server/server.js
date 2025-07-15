@@ -2,16 +2,16 @@ import './config/instrument.js'
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config'
-import connectDB from '../config/db.js';
+import connectDB from './config/db.js';
 import * as Sentry from "@sentry/node";
-import { clerkWebhooks } from '../controllers/webhooks.js';
+import { clerkWebhooks } from './controllers/webhooks.js';
 
 
 //Initialize Express
 const app = express();
 
 //Connect to database
-await connectDB()
+//await connectDB()
 
 // Middleware
 app.use(cors());
@@ -28,8 +28,20 @@ app.post('/webhooks',clerkWebhooks)
 //port
 const PORT = process.env.PORT || 5000;
 
-Sentry.setupExpressErrorHandler(app);
+// Sentry.setupExpressErrorHandler(app);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-})
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// })
+// Connect DB and start server
+(async () => {
+    try {
+        await connectDB();
+        Sentry.setupExpressErrorHandler(app);
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (err) {
+        console.error("Failed to start server:", err);
+    }
+})();
