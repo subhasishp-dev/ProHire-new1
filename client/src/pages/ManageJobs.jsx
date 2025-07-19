@@ -1,12 +1,47 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { manageJobsData } from '../assets/assets'
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
+import { AppContext } from '../context/AppContext.jsx';
+import axios from 'axios';
 
 const ManageJobs = () => {
 
-  const navigate =useNavigate()
+  const navigate = useNavigate()
+
+  const [jobs, setJobs] = useState(false);
+
+  const { backendUrl, companyToken } = useContext(AppContext);
+
+  // Function to fetch company Job Applications data
+  const fetchCompanyJobs = async () => {
+
+    try {
+
+      const { data } = await axios.get(backendUrl + '/api/company/list-jobs',
+        { headers: { token: companyToken } }
+      )
+
+      if (data.success) {
+        setJobs(data.jobsData.reverse());
+        console.log(data.jobsData);
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      toast.error(error.message);
+
+    }
+
+  }
+
+  useEffect(() => {
+    if (companyToken) {
+      fetchCompanyJobs();
+    }
+  }, [companyToken]);
 
 
   return (
@@ -24,9 +59,9 @@ const ManageJobs = () => {
             </tr>
           </thead>
           <tbody>
-            {manageJobsData.map((job,index)=>(
+            {manageJobsData.map((job, index) => (
               <tr key={index} className='text-gray-700'>
-                <td className='py-2 px-4 border-b max-sm:hidden'>{index+1}</td>
+                <td className='py-2 px-4 border-b max-sm:hidden'>{index + 1}</td>
                 <td className='py-2 px-4 border-b'>{job.title}</td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{moment(job.date).format('ll')}</td>
                 <td className='py-2 px-4 border-b max-sm:hidden'>{job.location}</td>
@@ -39,7 +74,7 @@ const ManageJobs = () => {
           </tbody>
         </table>
         <div className='mt-4 flex justify-end'>
-          <button onClick={()=>navigate('/dashboard/add-job')} className='bg-black text-white py-2 px-4 rounded'>Add new job</button>
+          <button onClick={() => navigate('/dashboard/add-job')} className='bg-black text-white py-2 px-4 rounded'>Add new job</button>
         </div>
       </div>
     </div>

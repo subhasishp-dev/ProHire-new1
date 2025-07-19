@@ -12,6 +12,7 @@ import ManageJobs from "./pages/ManageJobs";
 import ViewApplications from "./pages/ViewApplications";
 import { useLocation } from 'react-router-dom';
 import 'quill/dist/quill.snow.css'
+import { ToastContainer, toast } from 'react-toastify';
 
 const App = () => {
 
@@ -20,20 +21,25 @@ const App = () => {
    const shouldHideNavbar = location.pathname.startsWith('/dashboard');
 
 
-  const {showRecruiterLogin} = useContext(AppContext)
+  const {showRecruiterLogin, companyToken} = useContext(AppContext)
 
   return (
     <div>
       {!shouldHideNavbar && <Navbar />}
       {showRecruiterLogin && <RecruiterLogin />}
+      <ToastContainer />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/applications' element={<Applications />} />
         <Route path='/apply-job/:id' element={<ApplyJob/>} />
         <Route path='/dashboard' element={<Dashboard/>}>
-          <Route path='add-job' element={<AddJob/>} />
+          {companyToken ? <>
+            <Route path='add-job' element={<AddJob/>} />
           <Route path='manage-jobs' element={<ManageJobs/>} />
           <Route path='view-applications' element={<ViewApplications/>} />
+          </> : null
+          }
+          
         </Route>
       </Routes>
     </div>
