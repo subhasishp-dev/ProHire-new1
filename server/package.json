@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^1.7.9",
     "@sentry/node": "^9.38.0",
     "accepts": "^2.0.0",
