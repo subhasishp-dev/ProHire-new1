@@ -18,8 +18,16 @@ const app = express();
 //await connectDB()
 await connectCloudinary();
 
+// Use this configuration:
+const allowedOrigins = ['http://localhost:5173','https://pro-hire-new1-client.vercel.app/'];
+
+
+
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true, // if using cookies or auth headers
+}));
 app.use(express.json());
 app.use(clerkMiddleware({
     secretKey: process.env.CLERK_SECRET_KEY,
