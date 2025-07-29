@@ -34,7 +34,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 app.post('/webhooks', clerkWebhooks)
 app.use('/api/company', companyRoutes);
 app.use('/api/jobs', jobRoutes)
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 
 
 //port
