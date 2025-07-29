@@ -11,58 +11,51 @@ import jobRoutes from './routes/jobRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { clerkMiddleware } from '@clerk/express'
 
-//Initialize Express
+// Initialize Express
 const app = express();
 
-//Connect to database
-//await connectDB()
+// Connect to cloudinary
 await connectCloudinary();
 
-// Use this configuration:
+// CORS Configuration
 const allowedOrigins = ['http://localhost:5173', 'https://pro-hire-new1-client.vercel.app'];
 
-
-
-// Middleware
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin (like Postman)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true, // if using cookies or auth headers
+    credentials: true
 }));
 
-app.options('*', cors());
-
+// Middleware
 app.use(express.json());
+
 app.use(clerkMiddleware({
     secretKey: process.env.CLERK_SECRET_KEY,
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY
-}))
+}));
 
 // Routes
-app.get('/', (req, res) => res.send("API Working"))
+app.get('/', (req, res) => res.send("API Working"));
+
 app.get("/debug-sentry", function mainHandler(req, res) {
     throw new Error("My first Sentry error!");
 });
-app.post('/webhooks', clerkWebhooks)
+
+app.post('/webhooks', clerkWebhooks);
 app.use('/api/company', companyRoutes);
-app.use('/api/jobs', jobRoutes)
+app.use('/api/jobs', jobRoutes);
 app.use('/api/users', userRoutes);
 
-
-//port
+// Port
 const PORT = process.env.PORT || 5000;
 
-// Sentry.setupExpressErrorHandler(app);
-
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-// })
-// Connect DB and start server
+// Start server after DB connection
 (async () => {
     try {
         await connectDB();
