@@ -15,6 +15,15 @@ export const syncUser = async (req, res) => {
     try {
         let user = await User.findById(userId);
 
+         if (!user) {
+            user = await User.findOne({ email });
+
+            if (user) {
+                user._id = userId; // update _id to Clerk's ID
+                await user.save();
+            }
+        }
+
         if (!user) {
             // Create new user in DB
             user = await User.create({

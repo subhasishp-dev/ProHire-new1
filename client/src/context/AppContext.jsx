@@ -131,7 +131,6 @@ export const AppContextProvider = (props) => {
 
     useEffect(() => {
 
-
         const syncUserToBackend = async () => {
             try {
                 const token = await getToken();
@@ -142,19 +141,23 @@ export const AppContextProvider = (props) => {
                     }
                 });
 
-                if (!data.success) {
+                if (data.success) {
+                    setUserData(data.user);
+                    fetchUserApplications();
+                } else {
                     toast.error(data.message);
                 }
             } catch (error) {
                 console.error("User sync failed:", error.message);
+                toast.error(error.message)
             }
         }
 
 
         if (user) {
-            fetchUserData()
+            //fetchUserData()
             syncUserToBackend()
-            fetchUserApplications()
+            //fetchUserApplications()
         }
         // if (user) {
         //     fetch("http://localhost:5000/api/users/sync", {
