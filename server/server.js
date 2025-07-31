@@ -23,6 +23,17 @@ app.use(cors({
     origin: ['http://localhost:5173', 'https://pro-hire-new1-client.vercel.app'],
     credentials: true
 }));
+
+// Fix CORS preflight issues (especially for Vercel frontend)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://pro-hire-new1-client.vercel.app");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
+
 app.use(express.json());
 app.use(clerkMiddleware({
     secretKey: process.env.CLERK_SECRET_KEY,
