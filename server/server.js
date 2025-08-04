@@ -20,7 +20,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://pro-hire-new1-client.vercel.app'],
+    origin: ['https://pro-hire-new1-client.vercel.app'],
     credentials: true
 }));
 
